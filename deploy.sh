@@ -93,10 +93,33 @@ if [[ -z "$VENV_PYTHON" ]]; then
   [[ -n "$VENV_PYTHON" ]] || die "el entorno virtual no contiene un intérprete válido."
 fi
 
+"$VENV_PYTHON" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 10) else 1)' >/dev/null 2>&1 ||
+  die "el intérprete de $VENV_DIR no es Python 3.10+ ($("$VENV_PYTHON" -V 2>&1)). Elimina $VENV_DIR y vuelve a ejecutar."
+
+pip_available() {
+  "$VENV_PYTHON" -m pip --version >/dev/null 2>&1
+}
+
 if [[ "$SKIP_INSTALL" != "1" ]]; then
+  if ! pip_available; then
+    log "pip no está disponible en $VENV_DIR; intentando repararlo con ensurepip"
+    "$VENV_PYTHON" -m ensurepip --upgrade >/dev/null 2>&1 || true
+  fi
+
+  if pip_available; then
+    PIP_CMD=("$VENV_PYTHON" -m pip)
+  elif "$PYTHON" -m pip --python "$VENV_PYTHON" --version >/dev/null 2>&1; then
+    log "Usando el pip de $PYTHON para instalar en $VENV_DIR"
+    PIP_CMD=("$PYTHON" -m pip --python "$VENV_PYTHON")
+  else
+    die "no se pudo preparar pip en $VENV_DIR.
+Instala python3-venv y python3-pip (Debian/Ubuntu: sudo apt install python3-venv python3-pip),
+elimina $VENV_DIR y vuelve a ejecutar."
+  fi
+
   log "Instalando dependencias"
-  "$VENV_PYTHON" -m pip install --quiet --upgrade pip
-  "$VENV_PYTHON" -m pip install --quiet -r requirements.txt
+  "${PIP_CMD[@]}" install --quiet --upgrade pip
+  "${PIP_CMD[@]}" install --quiet -r requirements.txt
 else
   log "SKIP_INSTALL=1: se omiten las dependencias"
 fi

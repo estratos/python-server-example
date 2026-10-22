@@ -52,6 +52,11 @@ Desde PowerShell en Windows, invócalo a través de Git Bash:
 & "C:\Program Files\Git\bin\bash.exe" deploy.sh
 ```
 
+Si el entorno virtual existente no tiene `pip` (por ejemplo, porque lo creó otro
+proceso con `--without-pip`), el script intenta repararlo con `ensurepip` y, si no
+es posible, usa el `pip` del intérprete base. Como último recurso indica instalar
+`python3-venv`/`python3-pip` y borrar `.venv` para recrearlo.
+
 ## Endpoints
 
 | Método   | Ruta               | Descripción                                  |
