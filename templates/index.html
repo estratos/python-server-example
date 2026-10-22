@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tareas · ejemplo FastAPI</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="card">
+      <header>
+        <h1>Tareas</h1>
+        <p class="subtitle">Servidor de ejemplo con FastAPI</p>
+      </header>
+
+      <form id="new-task" class="new-task" autocomplete="off">
+        <label class="sr-only" for="title">Nueva tarea</label>
+        <input
+          id="title"
+          name="title"
+          type="text"
+          maxlength="120"
+          placeholder="¿Qué hay que hacer?"
+          required
+        />
+        <button type="submit">Añadir</button>
+      </form>
+
+      <p id="error" class="error" role="alert" hidden></p>
+
+      <ul id="tasks" class="tasks"></ul>
+      <p id="empty" class="empty" hidden>No hay tareas todavía.</p>
+
+      <footer>
+        <span>$task_count tarea(s) al cargar la página</span>
+        <a href="/docs">Documentación de la API →</a>
+      </footer>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
